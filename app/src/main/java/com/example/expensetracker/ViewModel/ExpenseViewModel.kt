@@ -4,8 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expensetracker.Repository.ExpenseRepository
+import com.example.expensetracker.data.RoomDatabase.CategorySummary
 import com.example.expensetracker.data.RoomDatabase.Expense
 import com.example.expensetracker.data.RoomDatabase.ExpenseDatabase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,6 +21,13 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
     val allExpense: StateFlow<List<Expense>> = repository.getAllExpenses()
         .stateIn(
             viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            emptyList()
+        )
+
+    val categorySummary: StateFlow<List<CategorySummary>> = repository.getCategorySummary()
+        .stateIn(
+            scope = viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
