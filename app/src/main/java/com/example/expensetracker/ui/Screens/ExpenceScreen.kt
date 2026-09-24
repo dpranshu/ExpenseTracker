@@ -19,8 +19,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.expensetracker.ViewModel.ExpenseViewModel
+import com.example.expensetracker.data.RoomDatabase.Expense
 import com.example.expensetracker.ui.theme.ourBlue
 
 @Composable
@@ -36,12 +39,15 @@ fun ExpenceScreen(viewModel: ExpenseViewModel) {
 
 
     val categories by viewModel.categorySummary.collectAsStateWithLifecycle()
-
+//    val expenses by viewModel.allExpense.collectAsState()
+    var showEditDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { },
+                onClick = {
+                    showEditDialog = true
+                }, ///////////
                 shape = CircleShape,
                 containerColor = ourBlue,
                 contentColor = Color.White,
@@ -102,4 +108,20 @@ fun ExpenceScreen(viewModel: ExpenseViewModel) {
 
         }
     }
+
+    if(showEditDialog){
+        ExpenseEditorDialog(
+            onCancel = {showEditDialog = false},
+            onSave = { expense ->
+                viewModel.addExpense(expense)
+                showEditDialog = false
+            }
+        )
+    }
+
+
+
+
+
+
 }

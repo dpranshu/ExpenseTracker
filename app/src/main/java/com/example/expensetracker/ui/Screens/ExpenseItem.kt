@@ -21,8 +21,8 @@ fun ExpenceItem(
     category: String,
     amount: Double,
     transcationCount: Int,
-//    onEditClick: () -> {}
-//  onDeleteClick: () -> {}
+//    onEditClick: () -> Unit,
+//  onDeleteClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
