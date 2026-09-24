@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -76,64 +77,60 @@ fun ExpenceScreen(viewModel: ExpenseViewModel) {
             }
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(bottom = 80.dp)
         ) {
-            Text(
-                text = "The Tracker",
-                modifier = Modifier
-                    .padding(top = 37.dp),
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            item {
+                Text(
+                    text = "Expense Tracker",
+                    modifier = Modifier
+                        .padding(top = 37.dp),
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ExpenseChart(viewModel = viewModel)
-
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                ExpenseChart(viewModel = viewModel)
+            }
 
             if (categories.isEmpty()){
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ){
-                    Text(
-                        "No expences added yet!",
-                        color = Color.Gray
-                    )
-                }
-            } else{
-
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(bottom = 80.dp)
-                ) {
-                    items(
-                        items = categories,
-                        key = { it.category }
-                    ){ category ->
-
-
-
-                        ExpenceItem(
-                            category = category.category,
-                            transcationCount = category.transactionCount,
-                            amount = category.totalAmount,
-
-                            onEditClick = {
-                                selectedCategory = category.category
-                            },
-                            onDeleteClick = { viewModel.deleteCategory(category.category) }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 40.dp),
+                        contentAlignment = Alignment.Center
+                    ){
+                        Text(
+                            "No expences added yet!",
+                            color = Color.Gray
                         )
                     }
                 }
+            } else {
+                items(
+                    items = categories,
+                    key = { it.category }
+                ){ category ->
+
+                    ExpenceItem(
+                        category = category.category,
+                        transcationCount = category.transactionCount,
+                        amount = category.totalAmount,
+
+                        onEditClick = {
+                            selectedCategory = category.category
+                        },
+                        onDeleteClick = { viewModel.deleteCategory(category.category) }
+                    )
+                }
             }
-
-
         }
     }
 
@@ -236,6 +233,7 @@ fun CategoryTransactionsDialog(
             } else {
 
                 LazyColumn(
+                    modifier = Modifier.heightIn(max = 400.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
 

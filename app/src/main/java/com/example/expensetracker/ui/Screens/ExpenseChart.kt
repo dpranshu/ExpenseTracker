@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -234,8 +234,9 @@ fun ExpenseChart(
                 )
             } else {
                 Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState())
-                        .fillMaxSize(),
+                    modifier = Modifier
+                        .heightIn(max = 160.dp)
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     categories.forEachIndexed { index, item ->
@@ -258,7 +259,8 @@ fun ChartCategory(
 ) {
 
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
     ) {
 
         // Small colored circle
@@ -274,16 +276,12 @@ fun ChartCategory(
             modifier = Modifier.width(8.dp)
         )
 
-        Column {
-
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = category,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium
-            )
-
-        }
+        Text(
+            text = category,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
