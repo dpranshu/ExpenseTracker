@@ -32,6 +32,10 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
             emptyList()
         )
 
+    fun getExpensesByCategory(category: String): Flow<List<Expense>> {
+        return repository.getExpensesByCategory(category)
+    }
+
     fun addExpense(expense: Expense) {
         viewModelScope.launch {
             repository.insert(expense)
@@ -49,6 +53,14 @@ class ExpenseViewModel(application: Application) : AndroidViewModel(application)
             repository.delete(expense)
         }
     }
+
+    fun deleteCategory(category: String) {
+        viewModelScope.launch {
+            repository.deleteByCategory(category)
+        }
+    }
+
+
 
 
 }

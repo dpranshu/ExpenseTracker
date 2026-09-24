@@ -15,6 +15,12 @@ class ExpenseRepository(
     fun getCategorySummary(): Flow<List<CategorySummary>> {
         return dao.getCategorySummary()
     }
+
+    fun getExpensesByCategory(category: String): Flow<List<Expense>> {
+        return dao.getExpensesByCategory(category)
+    }
+
+
     suspend fun insert(expense: Expense) {
         dao.insert(expense)
     }
@@ -23,6 +29,9 @@ class ExpenseRepository(
     }
     suspend fun delete(expense: Expense) {
         dao.delete(expense)
+    }
+    suspend fun deleteByCategory(category: String) {
+        dao.deleteByCategory(category)
     }
     
 }

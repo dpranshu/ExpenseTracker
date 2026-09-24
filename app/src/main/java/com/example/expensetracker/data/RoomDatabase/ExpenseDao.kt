@@ -19,6 +19,9 @@ interface ExpenseDao {
     @Delete
     suspend fun delete(expense: Expense)
 
+    @Query("DELETE FROM expenses WHERE category = :category")
+    suspend fun deleteByCategory(category: String)
+
     @Query("SELECT * FROM expenses ORDER BY date DESC")
     fun getAllExpenses(): Flow<List<Expense>>
 
@@ -26,5 +29,9 @@ interface ExpenseDao {
         COUNT(*) As transactionCount,
         SUM(amount) as totalAmount FROM expenses GROUP BY category""")
     fun getCategorySummary(): Flow<List<CategorySummary>>
+
+    @Query("SELECT * FROM expenses WHERE category = :category ORDER BY date DESC")
+    fun getExpensesByCategory(category: String): Flow<List<Expense>>
+
 
 }

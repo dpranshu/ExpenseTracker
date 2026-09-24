@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,19 +30,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.expensetracker.data.RoomDatabase.Expense
 import com.example.expensetracker.Utils.formatDate
+import androidx.compose.material3.MaterialTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpenseEditorDialog(
+    expense: Expense? = null,
     onCancel: () -> Unit,
     onSave: (Expense) -> Unit,
 ) {
 
-    var amount by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
+    var amount by remember(expense) { mutableStateOf(expense?.amount?.toString() ?: "") }
+    var category by remember(expense) { mutableStateOf(expense?.category ?: "") }
 
-    var selectedDate by remember {
-        mutableStateOf(System.currentTimeMillis())
+    var selectedDate by remember(expense) {
+        mutableStateOf(expense?.date ?: System.currentTimeMillis())
     }
     var showDatePicker by remember {
         mutableStateOf(false)
@@ -49,7 +52,7 @@ fun ExpenseEditorDialog(
 
     ModalBottomSheet(
         onDismissRequest = { onCancel() },
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.surface
     ) {
         Column(
             modifier = Modifier
@@ -58,7 +61,7 @@ fun ExpenseEditorDialog(
                 .navigationBarsPadding()
         ) {
             Text(
-                text = "Add Expense",
+                text = if (expense == null) "Add Expense" else "Update Expense",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -79,8 +82,13 @@ fun ExpenseEditorDialog(
                     Text("Amount")
                 },
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.DarkGray,
-                    unfocusedBorderColor = Color.LightGray
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    cursorColor = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(14.dp)
             )
@@ -96,6 +104,15 @@ fun ExpenseEditorDialog(
                 label = {
                     Text("Category")
                 },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                ),
                 shape = RoundedCornerShape(14.dp)
             )
 
@@ -111,6 +128,16 @@ fun ExpenseEditorDialog(
                 label = {
                     Text("Date")
                 },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                ),
+
                 trailingIcon = {
                     Text(
                         text = "📅",
@@ -126,6 +153,11 @@ fun ExpenseEditorDialog(
                 onClick = {
                     showDatePicker = true
                 },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Choose Date")
@@ -139,18 +171,22 @@ fun ExpenseEditorDialog(
 
                     if (amountValue != null && category.isNotBlank()) {
 
-                        val expense = Expense(
+                        val resultExpense = expense?.copy(
+                            date = selectedDate,
+                            amount = amountValue,
+                            category = category
+                        ) ?: Expense(
                             date = selectedDate,
                             amount = amountValue,
                             category = category
                         )
 
-                        onSave(expense)
+                        onSave(resultExpense)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Save")
+                Text(if (expense == null) "Save" else "Update")
             }
 
 
